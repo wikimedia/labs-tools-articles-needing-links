@@ -169,11 +169,8 @@ def db_check_user():
         else:
             if not user.is_active:
                 return render_template('permission_denied.html')
-
-@app.before_request
-def db_admin_permissions():
-    if logged() and '/admin' in request.url and not get_user().is_admin:
-        return render_template('permission_denied.html')
+        if logged() and '/admin' in request.url and not get_user().is_admin:
+            return render_template('permission_denied.html')
 
 @app.route('/')
 def index():
