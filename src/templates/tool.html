@@ -17,7 +17,7 @@
 
 <script>
     document.getElementById('needs-more-links').addEventListener('click', ( e ) => {
-        $.post(`/report-article/${page_id}/needs-more-links`, ( data ) => {
+        $.post(`report-article/${page_id}/needs-more-links`, ( data ) => {
             nextArticle();
         });
     });
@@ -31,7 +31,7 @@
     let page_id = -1;
 
     function nextArticle() {
-        $.getJSON(`/suggest-article.json?wiki={{wiki.dbname}}&last_id=${last_id}`, ( data ) => {
+        $.getJSON(`suggest-article.json?wiki={{wiki.dbname}}&last_id=${last_id}`, ( data ) => {
             console.log(data);
             document.getElementById('page-title').innerText = data.page_title;
             document.getElementById('probability').innerText = data.probability;
