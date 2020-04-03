@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h1>{{ _('admin-interface') }}</h1>
+    <ul>
+        <li><a href="{{url_for('admin_wikis')}}">{{ _('admin-wikis') }}</a></li>
+    </ul>
+</div>
+{% endblock %}

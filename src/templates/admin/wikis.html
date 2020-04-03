@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h1>{{ _('admin-wikis') }}</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{{ _('dbname') }}</th>
+                <th>URL</th>
+                <th>{{ _('featured-category') }}</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for wiki in wikis %}
+                <tr>
+                    <td>{{wiki.dbname}}</td>
+                    <td>{{wiki.url}}</td>
+                    <td>{{wiki.featured_articles_category}}</td>
+                    <td>
+                        <form action="{{ url_for('admin_wiki_delete', id=wiki.id) }}" method="post">
+                            <a href="{{ url_for('admin_wiki_edit', id=wiki.id) }}" class="btn btn-success"><i class="fas fa-edit" aria-hidden="true"></i></a>
+                            <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>{{ _('add-wiki') }}</h3>
+    <form method="post">
+        <label for="dbname">{{ _('dbname') }}</label>
+        <select data-live-search="true" data-width="100%" class="selectpicker" name="dbname" id="dbname">
+            {% for wiki in sitematrix %}
+                <option value="{{wiki.0}}">{{wiki.2}} ({{wiki.0}})</option>
+            {% endfor %}
+        </select>
+
+        <label for="featured-category">{{ _('featured-category') }}</label>
+        <input type="text" class="form-control" name="featured-category" id="featured-category">
+
+        <input class="btn btn-primary form-control" type="submit" value="{{ _('submit') }}">
+    </form>
+</div>
+{% endblock %}

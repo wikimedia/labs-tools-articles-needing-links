@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row article">
+        <div id="main-area" class="col-sm-9">
+            <h1 id="page-title"></h1>
+            <div id="article-content"></div>
+        </div>
+        <div id="left-panel" class="col-sm-3">
+            <p>Probability: <span id="probability"></span> %</p>
+            <button id="needs-more-links" class="btn btn-danger form-control">Needs more links</button>
+            <button id="links-okay" class="display-next-article btn btn-success form-control">Links are okay</button>
+            <button id="btn-skip" class="display-next-article btn btn-secondary form-control">Skip</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('needs-more-links').addEventListener('click', ( e ) => {
+        $.post(`/report-article/${page_id}/needs-more-links`, ( data ) => {
+            nextArticle();
+        });
+    });
+    document.querySelectorAll('.display-next-article').forEach(( el ) => {
+        el.addEventListener('click', ( e ) => {
+            nextArticle();
+        });
+    });
+
+    let last_id = -1;
+    let page_id = -1;
+
+    function nextArticle() {
+        $.getJSON(`/suggest-article.json?wiki={{wiki.dbname}}&last_id=${last_id}`, ( data ) => {
+            console.log(data);
+            document.getElementById('page-title').innerText = data.page_title;
+            document.getElementById('probability').innerText = data.probability;
+            document.getElementById('article-content').innerHTML = data.page_html;
+            last_id = data.id;
+            page_id = data.page_id;
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", nextArticle);
+</script>
+{% endblock %}

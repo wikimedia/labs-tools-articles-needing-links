@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h1>Search for articles needing links</h1>
+    <form>
+        <label for="wiki">{{ _('select-wiki') }}</label>
+        <select data-live-search="true" data-width="100%" class="selectpicker" name="wiki" id="wiki">
+            {% for wiki in wikis %}
+                <option value="{{wiki.dbname}}">{{wiki.name}}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-primary form-control" type="submit">{{ _('submit') }}</button>
+    </form>
+</div>
+{% endblock %}
