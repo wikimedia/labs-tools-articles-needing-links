@@ -147,10 +147,15 @@ def get_user():
 
 @app.context_processor
 def inject_base_variables():
+    user = get_user()
+    if user:
+        is_admin = user.is_admin
+    else:
+        is_admin = False
     return {
         "logged": logged(),
         "username": mwoauth.get_current_user(),
-        "is_admin": get_user().is_admin
+        "is_admin": is_admin
     }
 
 @app.before_request
