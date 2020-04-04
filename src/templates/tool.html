@@ -18,13 +18,18 @@
 <script>
     document.getElementById('needs-more-links').addEventListener('click', ( e ) => {
         $.post(`report-article/${page_id}/needs-more-links`, ( data ) => {
+            console.log(data);
             nextArticle();
         });
     });
-    document.querySelectorAll('.display-next-article').forEach(( el ) => {
-        el.addEventListener('click', ( e ) => {
+    document.getElementById('links-okay').addEventListener('click', ( e ) => {
+        $.post(`report-article/${page_id}/links-okay`, ( data ) => {
+            console.log(data);
             nextArticle();
         });
+    });
+    document.getElementById('btn-skip').addEventListener('click', ( e ) => {
+        nextArticle();
     });
 
     let last_id = -1;

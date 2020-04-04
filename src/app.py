@@ -227,6 +227,16 @@ def report_article_needs_more_links(page_id):
         "mw_response": r
     })
 
+@app.route('/report-article/<int:page_id>/links-okay', methods=['POST'])
+def report_article_links_okay(page_id):
+    sa = SuggestedArticle.query.filter_by(page_id=page_id).first()
+    db.session.delete(sa)
+    db.session.commit()
+    return jsonify({
+        "status": "ok",
+        "page_id": page_id
+    })
+
 @app.route('/admin')
 def admin_home():
     return render_template('admin/index.html')
