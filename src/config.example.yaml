@@ -1,0 +1,9 @@
+SECRET_KEY: something
+MESSAGES_DIR: ../messages
+SQLALCHEMY_DATABASE_URI: mysql://root:password@localhost/articles_needing_links
+STATIC_URL: /static/
+APPLICATION_ROOT: /
+CONSUMER_KEY: 8b0e019231ba6f56666af5dab7ba01dd
+CONSUMER_SECRET: 5bf34e01daefed3b160368885e55b59e4fc1ad25
+OAUTH_MWURI: https://meta.wikimedia.org/w
+DEBUG: True
