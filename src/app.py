@@ -75,7 +75,7 @@ class Wiki(db.Model):
             data = cur.fetchall()[0]
         return {
             "sitename": data[2],
-            "url": data[3],
+            "url": data[4],
             "dbname": data[0]
         }
 
