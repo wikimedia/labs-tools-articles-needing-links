@@ -99,7 +99,7 @@ class Wiki(db.Model):
 
 class SuggestedArticle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    page_id = db.Column(db.Integer)
+    page_id = db.Column(db.Integer, unique=True)
     bytes_per_link = db.Column(db.Integer)
     probability = db.Column(db.Integer)
     wiki_id = db.Column(db.Integer, db.ForeignKey('wiki.id'), nullable=False)
