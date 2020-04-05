@@ -210,7 +210,6 @@ def report_article_needs_more_links(page_id):
         "format": "json",
         "meta": "tokens"
     }, url=sa.wiki_root_url)
-    print(r)
     token = r['query']['tokens']['csrftoken']
     r = mwoauth.request({
         "action": "edit",
