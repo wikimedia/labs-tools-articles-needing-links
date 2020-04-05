@@ -27,5 +27,6 @@
     "loading": "Loading...",
     "needs-more-links": "Needs more links",
     "links-are-okay": "Links are okay",
-    "skip": "Skip"
+    "skip": "Skip",
+    "search-for-articles-needing-links": "Search for articles needing links"
 }
