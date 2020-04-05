@@ -308,6 +308,8 @@ def suggest_articles(wiki, limit):
         )
         data = cur.fetchall()
     for row in data:
+        if SuggestedArticle.query.filter_by(page_id=row[0]).first() is not None:
+            continue
         bpl_min = w.bytes_per_link_avg
         bpl_max = w.bytes_per_link_max + w.tolerance
         if row[2] < bpl_min:
