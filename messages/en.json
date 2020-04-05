@@ -23,5 +23,9 @@
     "select-wiki": "Select your wiki",
     "template": "Template",
     "summary": "Edit summary",
-    "tolerance": "Tolerance"
+    "tolerance": "Tolerance",
+    "loading": "Loading...",
+    "needs-more-links": "Needs more links",
+    "links-are-okay": "Links are okay",
+    "skip": "Skip"
 }

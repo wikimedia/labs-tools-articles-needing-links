@@ -3,15 +3,15 @@
 <div class="container">
     <div class="row article">
         <div id="main-area" class="col-sm-9">
-            <h1 id="page-title"></h1>
+            <h1 id="page-title">{{ _('loading') }}</h1>
             <div id="article-content"></div>
         </div>
         <div id="left-panel" class="col-sm-3">
-            <p>Probability: <span id="probability"></span> %</p>
-            <p>Bytes per link: <span id="bytes-per-link"></span> bytes</p>
-            <button id="needs-more-links" class="btn btn-danger form-control">Needs more links</button>
-            <button id="links-okay" class="display-next-article btn btn-success form-control">Links are okay</button>
-            <button id="btn-skip" class="display-next-article btn btn-secondary form-control">Skip</button>
+            <p>Probability: <span id="probability">{{ _('loading') }}</span> %</p>
+            <p>Bytes per link: <span id="bytes-per-link">{{ _('loading') }}</span> bytes</p>
+            <button id="needs-more-links" class="btn btn-danger form-control">{{ _('needs-more-links') }}</button>
+            <button id="links-okay" class="display-next-article btn btn-success form-control">{{ _('links-are-okay') }}</button>
+            <button id="btn-skip" class="display-next-article btn btn-secondary form-control">{{ _('skip') }}</button>
         </div>
     </div>
 </div>
