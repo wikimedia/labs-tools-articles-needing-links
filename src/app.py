@@ -126,7 +126,8 @@ class SuggestedArticle(db.Model):
             "id": self.id,
             "page_id": self.page_id,
             "page_title": self.page_title,
-            "probability": self.probability
+            "probability": self.probability,
+            "bytes_per_link": self.bytes_per_link
         }
 
 mwoauth = MWOAuth(
