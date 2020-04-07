@@ -30,5 +30,6 @@
     "links-are-okay": "Links are okay",
     "skip": "Skip",
     "search-for-articles-needing-links": "Search for articles needing links",
-    "score": "Score"
+    "score": "Score",
+    "bytes-per-link": "Bytes per link"
 }
