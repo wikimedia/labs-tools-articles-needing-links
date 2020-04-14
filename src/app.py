@@ -55,10 +55,8 @@ class Wiki(db.Model):
     featured_articles_category = db.Column(db.String(255))
     template = db.Column(db.String(255))
     summary = db.Column(db.String(255))
-    bytes_per_link_avg = db.Column(db.Integer)
-    bytes_per_link_max = db.Column(db.Integer)
-    tolerance = db.Column(db.Integer)
     minimum_length = db.Column(db.Integer)
+    treshold = db.Column(db.Integer)
     articles = db.relationship('SuggestedArticle', backref='suggested_article', lazy=True)
 
     def _get_wiki_data(self):
@@ -101,7 +99,6 @@ class SuggestedArticle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     page_id = db.Column(db.Integer, unique=True)
     bytes_per_link = db.Column(db.Integer)
-    probability = db.Column(db.Integer)
     wiki_id = db.Column(db.Integer, db.ForeignKey('wiki.id'), nullable=False)
 
     @property
@@ -126,7 +123,6 @@ class SuggestedArticle(db.Model):
             "id": self.id,
             "page_id": self.page_id,
             "page_title": self.page_title,
-            "probability": self.probability,
             "bytes_per_link": self.bytes_per_link
         }
 
@@ -271,21 +267,12 @@ def admin_wiki_edit(id):
     if request.method == 'POST':
         w.featured_articles_category = request.form.get('featured-category')
         w.minimum_length = request.form.get('minimum-length')
+        w.treshold = request.form.get('treshold')
         w.template = request.form.get('template')
         w.summary = request.form.get('summary')
         db.session.commit()
         return redirect(request.url)
     return render_template('admin/wiki.html', wiki=w)
-
-@app.route('/admin/wikis/<int:id>/metrics', methods=['POST'])
-def admin_wiki_metrics(id):
-    w = Wiki.query.filter_by(id=id).first()
-    w.bytes_per_link_avg = request.form.get('avg-bytes-per-link')
-    w.bytes_per_link_max = request.form.get('max-bytes-per-link')
-    w.tolerance = request.form.get('tolerance')
-    db.session.commit()
-    flash(_('wiki-metrics-edited'), 'success')
-    return redirect(url_for('admin_wiki_edit', id=id))
 
 def floor(x, decimals=0):
     multiplier = 10 ** decimals
@@ -297,31 +284,27 @@ def floor(x, decimals=0):
 def suggest_articles(wiki, limit):
     w = Wiki.query.filter_by(dbname=wiki).first()
     conn = toolforge.connect(wiki)
-    treshold = floor(w.bytes_per_link_avg, 2)
     with conn.cursor() as cur:
         cur.execute(
-            '''select page_id, page_title, page_len/count(*) as bytes_per_link from pagelinks
+            '''select
+                page_id,
+                page_title,
+                page_len/count(*) as bytes_per_link
+            from pagelinks
             join page on page_id=pl_from
             where page_len>%s and page_namespace=0
             and page_id not in (select tl_from from templatelinks where tl_title=%s)
             group by page_id having bytes_per_link>%s
             limit %s;''' ,
-            (w.minimum_length, w.template, treshold, limit)
+            (w.minimum_length, w.template, w.treshold, limit)
         )
         data = cur.fetchall()
     for row in data:
         if SuggestedArticle.query.filter_by(page_id=row[0]).first() is not None:
             continue
-        bpl_min = treshold
-        bpl_max = w.bytes_per_link_max + w.tolerance
-        if row[2] > bpl_max:
-            probability = 100
-        else:
-            probability = (float(row[2]) - float(bpl_min))/float(bpl_max) * 100
         s = SuggestedArticle(
             page_id=row[0],
             bytes_per_link=row[2],
-            probability=probability,
             wiki_id=w.id
         )
         db.session.add(s)

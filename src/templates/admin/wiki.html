@@ -13,6 +13,9 @@
         <label for="minimum-length">{{ _('minimum-length') }}</label>
         <input class="form-control" type="number" name="minimum-length" id="minimum-length" value="{{wiki.minimum_length}}">
 
+        <label for="treshold">{{ _('treshold') }}</label>
+        <input class="form-control" type="number" name="treshold" id="treshold" value="{{wiki.treshold}}">
+
         <label for="template">{{ _('template') }}</label>
         <input class="form-control" type="text" name="template" id="template" value="{{wiki.template}}">
 
@@ -20,25 +23,6 @@
         <input class="form-control" type="text" name="summary" id="summary" value="{{wiki.summary}}">
 
         <input class="btn btn-primary form-control" type="submit" value="{{ _('submit') }}">
-    </form>
-
-    <h2>{{ _('wiki-metrics') }}</h2>
-    <form action="metrics" method="post">
-        <label for="max-bytes-per-link">{{ _('max-bytes-per-link') }}</label>
-        <input class="form-control" type="number" name="max-bytes-per-link" id="max-bytes-per-link" value="{{wiki.bytes_per_link_max}}">
-        <label for="avg-bytes-per-link">{{ _('avg-bytes-per-link') }}</label>
-        <input class="form-control" type="number" name="avg-bytes-per-link" id="avg-bytes-per-link" value="{{wiki.bytes_per_link_avg}}">
-        <label for="tolerance">{{ _('tolerance') }}</label>
-        <input class="form-control" type="number" name="tolerance" id="tolerance" value="{{wiki.tolerance}}">
-
-        <div class="row">
-            <div class="col-sm-6">
-                <button class="btn btn-primary form-control" type="submit">{{ _('save') }}</button>
-            </div>
-            <div class="col-sm-6">
-                <button class="btn btn-secondary form-control">{{ _('calculate-metrics') }}</button>
-            </div>
-        </div>
     </form>
 </div>
 {% endblock %}
