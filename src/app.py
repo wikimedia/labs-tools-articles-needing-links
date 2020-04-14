@@ -297,8 +297,8 @@ def floor(x, decimals=0):
 def suggest_articles(wiki, limit):
     w = Wiki.query.filter_by(dbname=wiki).first()
     conn = toolforge.connect(wiki)
+    treshold = floor(w.bytes_per_link_avg, 2)
     with conn.cursor() as cur:
-        treshold = floor(w.bytes_per_link_avg, 2)
         cur.execute(
             '''select page_id, page_title, page_len/count(*) as bytes_per_link from pagelinks
             join page on page_id=pl_from where page_len>%s and page_namespace=0
@@ -310,11 +310,9 @@ def suggest_articles(wiki, limit):
     for row in data:
         if SuggestedArticle.query.filter_by(page_id=row[0]).first() is not None:
             continue
-        bpl_min = w.bytes_per_link_avg
+        bpl_min = treshold
         bpl_max = w.bytes_per_link_max + w.tolerance
-        if row[2] < bpl_min:
-            probability = 0
-        elif row[2] > bpl_max:
+        if row[2] > bpl_max:
             probability = 100
         else:
             probability = (row[2] - bpl_min)/bpl_max * 100
