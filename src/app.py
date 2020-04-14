@@ -315,7 +315,7 @@ def suggest_articles(wiki, limit):
         if row[2] > bpl_max:
             probability = 100
         else:
-            probability = (row[2] - bpl_min)/bpl_max * 100
+            probability = (float(row[2]) - float(bpl_min))/float(bpl_max) * 100
         s = SuggestedArticle(
             page_id=row[0],
             bytes_per_link=row[2],
