@@ -301,10 +301,12 @@ def suggest_articles(wiki, limit):
     with conn.cursor() as cur:
         cur.execute(
             '''select page_id, page_title, page_len/count(*) as bytes_per_link from pagelinks
-            join page on page_id=pl_from where page_len>%s and page_namespace=0
+            join page on page_id=pl_from
+            where page_len>%s and page_namespace=0
+            and page_id not in (select tl_from from templatelinks where tl_title=%s)
             group by page_id having bytes_per_link>%s
             limit %s;''' ,
-            (w.minimum_length, treshold, limit)
+            (w.minimum_length, w.template, treshold, limit)
         )
         data = cur.fetchall()
     for row in data:
