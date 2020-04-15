@@ -32,5 +32,6 @@
     "search-for-articles-needing-links": "Search for articles needing links",
     "score": "Score",
     "bytes-per-link": "Bytes per link",
-    "treshold": "Treshold"
+    "treshold": "Treshold",
+    "excluded-articles": "Excluded articles"
 }

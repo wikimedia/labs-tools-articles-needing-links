@@ -22,6 +22,7 @@ import click
 import requests
 import math
 import toolforge
+import simplejson as json
 from flask_jsonlocale import Locales
 from flask_mwoauth import MWOAuth
 from SPARQLWrapper import SPARQLWrapper, JSON
@@ -57,6 +58,7 @@ class Wiki(db.Model):
     summary = db.Column(db.String(255))
     minimum_length = db.Column(db.Integer)
     treshold = db.Column(db.Integer)
+    excluded_articles = db.Column(db.Text)
     articles = db.relationship('SuggestedArticle', backref='suggested_article', lazy=True)
 
     def _get_wiki_data(self):
@@ -89,11 +91,17 @@ class Wiki(db.Model):
         self.url_ = sm['url']
         db.session.commit()
         return self.url_
-    
+
     @property
     def name(self):
         sm = self._get_wiki_data()
         return '%s (%s)' % (sm['sitename'], sm['dbname'])
+
+    @property
+    def excluded_articles_json(self):
+        if self.excluded_articles is None or self.excluded_articles == "":
+            return []
+        return json.dumps(self.excluded_articles)
 
 class SuggestedArticle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -292,6 +300,10 @@ def suggest_articles(wiki, limit):
     w = Wiki.query.filter_by(dbname=wiki).first()
     conn = toolforge.connect(wiki)
     with conn.cursor() as cur:
+        if len(w.excluded_articles_json) > 0:
+            regexp = r'^(%s)' % "|".join(w.excluded_articles_json)
+        else:
+            regexp = r'^$'
         cur.execute(
             '''select
                 page_id,
@@ -301,9 +313,10 @@ def suggest_articles(wiki, limit):
             join page on page_id=pl_from
             where page_len>%s and page_namespace=0
             and page_id not in (select tl_from from templatelinks where tl_title=%s)
+            and page_title not rlike %s
             group by page_id having bytes_per_link>%s
             limit %s;''' ,
-            (w.minimum_length, w.template, w.treshold, limit)
+            (w.minimum_length, w.template, regexp, w.treshold, limit)
         )
         data = cur.fetchall()
     for row in data:

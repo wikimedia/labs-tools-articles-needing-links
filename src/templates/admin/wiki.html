@@ -22,6 +22,10 @@
         <label for="template">{{ _('summary') }}</label>
         <input class="form-control" type="text" name="summary" id="summary" value="{{wiki.summary}}">
 
+        <label for="excluded-articles">{{ _('excluded-articles') }}</label>
+        <textarea class="form-control" name="excluded-articles" id="excluded-articles" cols="30" rows="10" placeholder="Insert one pattern at a line. Articles starting with this pattern will not be suggested.">{% for item in wiki.excluded_articles_json %}{{item}}
+{% endfor %}</textarea>
+
         <input class="btn btn-primary form-control" type="submit" value="{{ _('submit') }}">
     </form>
 </div>
