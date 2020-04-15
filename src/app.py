@@ -108,6 +108,7 @@ class SuggestedArticle(db.Model):
     page_id = db.Column(db.Integer, unique=True)
     bytes_per_link = db.Column(db.Integer)
     wiki_id = db.Column(db.Integer, db.ForeignKey('wiki.id'), nullable=False)
+    dismissed = db.Column(db.Boolean, default=False, nullable=False)
 
     @property
     def wiki(self):
@@ -195,7 +196,8 @@ def suggest_article():
     wiki = Wiki.query.filter_by(dbname=request.args.get('wiki')).first()
     item = SuggestedArticle.query.filter(db.and_(
         SuggestedArticle.id > last_id,
-        SuggestedArticle.wiki_id == wiki.id
+        SuggestedArticle.wiki_id == wiki.id,
+        SuggestedArticle.dismissed == False
     )).order_by('id').first()
     if item is None:
         return jsonify({
@@ -241,7 +243,7 @@ def report_article_needs_more_links(page_id):
 @app.route('/report-article/<int:page_id>/links-okay', methods=['POST'])
 def report_article_links_okay(page_id):
     sa = SuggestedArticle.query.filter_by(page_id=page_id).first()
-    db.session.delete(sa)
+    sa.dismissed = True
     db.session.commit()
     return jsonify({
         "status": "ok",
