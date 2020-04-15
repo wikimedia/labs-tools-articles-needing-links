@@ -35,14 +35,54 @@
     let last_id = -1;
     let page_id = -1;
 
+    function error(error) {
+        document.getElementById('page-title').innerText = error;
+        document.getElementById('bytes-per-link').hidden = true;
+        document.getElementById('article-content').innerHTML = '';
+    }
+
+    function hide() {
+        document.getElementById('bytes-per-link').hidden = true;
+    }
+
+    function disable() {
+        document.querySelectorAll('.btn').forEach(( el ) => {
+            el.disabled = true;
+        })
+    }
+
+    function enable() {
+        document.querySelectorAll('.btn').forEach(( el ) => {
+            el.disabled = false;
+        })
+    }
+
     function nextArticle() {
+        document.getElementById('page-title').innerHTML = "{{ _('loading') }}";
+        document.getElementById('bytes-per-link').innerText = "{{ _('loading') }}";
+        document.getElementById('article-content').innerHTML = "{{ _('loading') }}";
+        disable();
         $.getJSON(`suggest-article.json?wiki={{wiki.dbname}}&last_id=${last_id}`, ( data ) => {
             console.log(data);
-            document.getElementById('page-title').innerText = data.page_title;
-            document.getElementById('bytes-per-link').innerText = data.bytes_per_link;
-            document.getElementById('article-content').innerHTML = data.page_html;
-            last_id = data.id;
-            page_id = data.page_id;
+            if ( data.status == 'ok' ) {
+                document.getElementById('page-title').innerText = data.page_title;
+                document.getElementById('bytes-per-link').innerText = data.bytes_per_link;
+                document.getElementById('article-content').innerHTML = data.page_html;
+                last_id = data.id;
+                page_id = data.page_id;
+                enable();
+            } else {
+                disable();
+                switch (data.errorcode) {
+                    case 'noarticle':
+                        error('No such article found');
+                        break;
+
+                    default:
+                        error('Unknown error occured');
+                        break;
+                }
+            }
         });
     }
 

@@ -185,10 +185,16 @@ def index():
 def suggest_article():
     last_id = request.args.get('last_id', 0)
     wiki = Wiki.query.filter_by(dbname=request.args.get('wiki')).first()
-    res = SuggestedArticle.query.filter(db.and_(
+    item = SuggestedArticle.query.filter(db.and_(
         SuggestedArticle.id > last_id,
         SuggestedArticle.wiki_id == wiki.id
-    )).order_by('id').first().as_json()
+    )).order_by('id').first()
+    if item is None:
+        return jsonify({
+            'status': 'error',
+            'errorcode': 'noarticle'
+        })
+    res = item.as_json()
     res['page_html'] = mwoauth.request({
         "action": "parse",
         "format": "json",
@@ -196,6 +202,7 @@ def suggest_article():
         "disableeditsection": 1,
         "disabletoc": 1
     }, url=wiki.root_url)['parse']['text']['*']
+    res['status'] = 'ok'
     return jsonify(res)
 
 @app.route('/report-article/<int:page_id>/needs-more-links', methods=['POST'])
