@@ -101,7 +101,7 @@ class Wiki(db.Model):
     def excluded_articles_json(self):
         if self.excluded_articles is None or self.excluded_articles == "":
             return []
-        return json.dumps(self.excluded_articles)
+        return json.loads(self.excluded_articles)
 
 class SuggestedArticle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
