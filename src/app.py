@@ -315,6 +315,7 @@ def suggest_articles(wiki, limit):
             join page on page_id=pl_from
             where page_len>%s and page_namespace=0
             and page_id not in (select tl_from from templatelinks where tl_title=%s)
+            and page_id not in (select pp_page from page_props where pp_propname="disambiguation")
             and page_title not rlike %s
             group by page_id having bytes_per_link>%s
             limit %s;''' ,
